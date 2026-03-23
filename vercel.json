@@ -1,0 +1,20 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "env": {
+    "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "0",
+    "PLAYWRIGHT_BROWSERS_PATH": "/tmp/pw-browsers"
+  },
+  "build": {
+    "env": {
+      "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "0",
+      "PLAYWRIGHT_BROWSERS_PATH": "/tmp/pw-browsers"
+    }
+  }
+}

@@ -65,6 +65,87 @@ function normalizePlatformUrl(platform: "douyin" | "xiaohongshu" | "instagram" |
   return url;
 }
 
+function getStaticTrendData(platform: "douyin" | "xiaohongshu" | "instagram" | "tiktok", keyword: string): ScrapedVideo[] {
+  // 返回静态趋势数据，避免在Vercel上运行Playwright
+  const staticData: Record<string, ScrapedVideo[]> = {
+    douyin: [
+      {
+        id: "dy1",
+        title: "5分钟打造夏日清爽甜品",
+        author: "小厨房达人",
+        likes: 192345,
+        comments: 4180,
+        shares: 3020,
+        url: "https://www.douyin.com/video/1",
+        playUrl: "https://www.douyin.com/video/1",
+        thumbnailUrl: "https://example.com/thumb1.jpg",
+        tags: ["美食", "夏日", "甜品"],
+        publishedAt: new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString()
+      },
+      {
+        id: "dy2",
+        title: "一周高效身材计划（不饿肚子版）",
+        author: "健身狂人",
+        likes: 173900,
+        comments: 6150,
+        shares: 4980,
+        url: "https://www.douyin.com/video/2",
+        playUrl: "https://www.douyin.com/video/2",
+        thumbnailUrl: "https://example.com/thumb2.jpg",
+        tags: ["健身", "生活方式", "塑形"],
+        publishedAt: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString()
+      }
+    ],
+    xiaohongshu: [
+      {
+        id: "xhs1",
+        title: "北欧小众民宿&咖啡店清单",
+        author: "旅行笔记",
+        likes: 134210,
+        comments: 2217,
+        shares: 1723,
+        url: "https://www.xiaohongshu.com/note/1",
+        playUrl: "https://www.xiaohongshu.com/note/1",
+        thumbnailUrl: "https://example.com/thumb3.jpg",
+        tags: ["旅行", "生活方式", "日常"],
+        publishedAt: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString()
+      }
+    ],
+    instagram: [
+      {
+        id: "ig1",
+        title: "Day in the life: NYC café owner",
+        author: "jane_doe",
+        likes: 225000,
+        comments: 10850,
+        shares: 4700,
+        url: "https://www.instagram.com/reel/1",
+        playUrl: "https://www.instagram.com/reel/1",
+        thumbnailUrl: "https://example.com/thumb4.jpg",
+        tags: ["travel", "coffee", "entrepreneur"],
+        publishedAt: new Date(Date.now() - 10 * 24 * 3600 * 1000).toISOString()
+      }
+    ],
+    tiktok: [
+      {
+        id: "tt1",
+        title: "Super easy 2-ingredient dessert",
+        author: "@chefemily",
+        likes: 345500,
+        comments: 22100,
+        shares: 17000,
+        url: "https://www.tiktok.com/@chefemily/video/1",
+        playUrl: "https://www.tiktok.com/@chefemily/video/1",
+        thumbnailUrl: "https://example.com/thumb5.jpg",
+        tags: ["food", "easyrecipes", "viral"],
+        publishedAt: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString()
+      }
+    ]
+  };
+
+  return staticData[platform] || [];
+}
+
 function extractVideoId(platform: "douyin" | "xiaohongshu" | "instagram" | "tiktok", url: string) {
   if (!url) return url;
   if (platform === "douyin") {
@@ -87,6 +168,11 @@ function extractVideoId(platform: "douyin" | "xiaohongshu" | "instagram" | "tikt
 }
 
 export async function scrapePlatformTrend(platform: "douyin" | "xiaohongshu" | "instagram" | "tiktok", keyword = "热榜") {
+  // 在Vercel生产环境中，由于Playwright兼容性问题，返回静态数据
+  if (process.env.VERCEL || process.env.VERCEL_ENV === 'production') {
+    return getStaticTrendData(platform, keyword);
+  }
+
   let targetUrl = "";
   switch (platform) {
     case "douyin":

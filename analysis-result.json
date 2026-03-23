@@ -1,0 +1,10 @@
+{
+  "totalVideos": 3,
+  "totalLikes": 3500,
+  "topPlatform": "抖音",
+  "topVideo": {
+    "title": "测试视频2",
+    "likes": 2000,
+    "author": "测试作者2"
+  }
+}
