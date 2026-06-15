@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/import-note.js": {
-      "maxDuration": 30
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
