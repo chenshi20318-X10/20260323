@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>灵感拼图下发工具</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">I</div>
+          <div>
+            <h1>灵感拼图下发工具</h1>
+            <p>Image inspiration board</p>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="工作区导航">
+          <button class="nav-item active" type="button">拼图生成</button>
+          <button class="nav-item" type="button">画风识别</button>
+          <button class="nav-item" type="button">灵感描述</button>
+          <button class="nav-item" type="button">长图导出</button>
+        </nav>
+
+        <section class="capacity-panel">
+          <div class="panel-title">当前素材</div>
+          <div class="capacity-row">
+            <span>已上传</span>
+            <strong id="imageCount">0</strong>
+          </div>
+          <div class="capacity-row">
+            <span>拼图行数</span>
+            <strong id="selectedCount">0</strong>
+          </div>
+          <div class="capacity-meter" aria-hidden="true">
+            <span id="uploadMeter"></span>
+          </div>
+          <p class="health-text" id="statusText">上传图片后会按每排 4 张自动拼接</p>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <h2>今日灵感参考</h2>
+            <p>上传图片后自动按每排 4 张横向拼接，归类小红书 / Ins 审美画风，并为每一组生成差异化描述。</p>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-button" id="clearBoard" type="button">清空</button>
+            <button class="primary-button" id="downloadBoard" type="button" disabled>下载长图</button>
+            <a class="download-ready-link" id="manualDownloadLink" href="#" download hidden>
+              保存生成的长图
+            </a>
+          </div>
+        </header>
+
+        <section class="summary-grid" aria-label="灵感概览">
+          <article class="metric">
+            <span>主画风</span>
+            <strong id="styleName">等待图片</strong>
+          </article>
+          <article class="metric">
+            <span>色彩倾向</span>
+            <strong id="colorMood">--</strong>
+          </article>
+          <article class="metric">
+            <span>画面气质</span>
+            <strong id="visualMood">--</strong>
+          </article>
+          <article class="metric">
+            <span>导出比例</span>
+            <strong>1080 宽</strong>
+          </article>
+        </section>
+
+        <div class="content-grid">
+          <section class="maker-panel">
+            <div class="upload-zone" id="uploadZone">
+              <input id="imageInput" type="file" accept="image/*" multiple />
+              <div class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M12 3v12m0-12 4 4m-4-4-4 4" />
+                  <path d="M5 15v3a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-3" />
+                </svg>
+              </div>
+              <div>
+                <h3>上传参考图片</h3>
+                <p>支持 JPG、PNG、WebP；所有上传图片都会进入拼图，最后一排不足 4 张自动补白。</p>
+              </div>
+            </div>
+
+            <section class="note-import-panel">
+              <div class="section-header compact">
+                <h3>小红书链接导入</h3>
+                <span class="status-pill" id="noteImportStatus">可选</span>
+              </div>
+              <div class="note-import-row">
+                <input
+                  id="noteUrlInput"
+                  type="url"
+                  placeholder="粘贴小红书笔记链接，例如 https://www.xiaohongshu.com/explore/..."
+                />
+                <button class="secondary-button" id="importNote" type="button">识别导入</button>
+              </div>
+            </section>
+
+            <div class="section-header compact">
+              <h3>素材队列</h3>
+              <span class="status-pill" id="queueHint">等待上传</span>
+            </div>
+            <div class="thumb-grid" id="thumbGrid"></div>
+
+            <div class="editor-grid">
+              <section class="settings-panel">
+                <div class="section-header compact">
+                  <h3>拼图设置</h3>
+                  <span class="status-pill">实时预览</span>
+                </div>
+
+                <label class="field">
+                  <span>每排格数</span>
+                  <select id="tileCount">
+                    <option value="4">4 图横排</option>
+                    <option value="3">3 图横排</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>统一风格</span>
+                  <select id="layoutMode">
+                    <option value="auto">自动识别</option>
+                    <option value="ui">小红书界面设计风</option>
+                    <option value="collage">Ins 多图拼贴风</option>
+                    <option value="polka">波点元素装饰风</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>下发标题</span>
+                  <input id="boardTitle" type="text" value="今日灵感参考" maxlength="18" />
+                </label>
+
+                <label class="field">
+                  <span>标头副文案</span>
+                  <input
+                    id="headerSubtitle"
+                    type="text"
+                    value="小红书 / Ins 审美灵感横向参考"
+                    maxlength="34"
+                  />
+                </label>
+
+                <div class="color-grid">
+                  <label class="field">
+                    <span>标头背景色</span>
+                    <input id="headerBgColor" type="color" value="#1f2421" />
+                  </label>
+                  <label class="field">
+                    <span>强调色</span>
+                    <input id="headerAccentColor" type="color" value="#f4c95d" />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span>补充要求</span>
+                  <textarea
+                    id="briefInput"
+                    maxlength="120"
+                    placeholder="例如：突出高级感、适合小红书封面、保留人物松弛感"
+                  ></textarea>
+                </label>
+              </section>
+
+              <section class="copy-panel">
+                <div class="section-header compact">
+                  <h3>图片灵感描述</h3>
+                  <button class="ghost-button small-button" id="copyBrief" type="button" disabled>复制</button>
+                </div>
+                <div class="row-copy-editor" id="rowCopyEditor"></div>
+                <div class="inspiration-copy" id="inspirationCopy">
+                  上传图片后，这里会按每一排生成可直接下发给设计师或模型的风格描述。
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <aside class="preview-panel">
+            <div class="section-header compact">
+              <h3>长图预览</h3>
+              <span class="status-pill" id="previewSize">1080 x --</span>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="boardCanvas" width="1080" height="1680"></canvas>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js?v=inspiration-board-public-v5"></script>
+  </body>
+</html>

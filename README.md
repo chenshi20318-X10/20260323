@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 灵感拼图下发工具
 
-## Getting Started
+这是一个本地网页工具，用来把所有上传的参考图片按行整理成横向拼接长图，并自动生成小红书 / Ins 审美取向的画风归类和逐行灵感描述。
 
-First, run the development server:
+## 当前能力
+
+- 支持上传 JPG、PNG、WebP 等图片
+- 支持粘贴小红书笔记链接，自动尝试保存笔记里的图片 / GIF 并加入拼图
+- 支持所有上传图片进入拼图，按每排 4 张横向拼接
+- 支持自动识别、小红书界面设计风、Ins 多图拼贴风、波点元素装饰风统一
+- 基于图片像素启发式识别画风、色彩倾向和画面气质
+- 针对每一排拼接素材自动生成可下发的中文风格描述
+- 使用 Canvas 生成 1080px 宽竖版长图
+- 支持复制灵感描述和下载 PNG 长图
+
+## 运行方式
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+python3 server.py
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+自己打开：
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://127.0.0.1:8000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+同一个 Wi-Fi 或内网里的其他人打开：
 
-## Learn More
+```text
+http://你的电脑IP:8000
+```
 
-To learn more about Next.js, take a look at the following resources:
+启动服务时终端会打印类似下面的地址：
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+LAN access: http://192.168.x.x:8000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+不要用 `file://.../index.html` 这种本地文件地址分享给别人；那只在你自己的电脑上有效。图片只在浏览器本地读取，不会上传到外部服务。
 
-## Deploy on Vercel
+如果要给不在同一个内网的人使用，需要把这个静态网页部署到公网服务，例如公司内部静态站点、Vercel、Netlify、GitHub Pages 或对象存储静态网站。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 小红书链接导入说明
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+工具会尽量从笔记网页里提取图片和 GIF，并保存到本地 `artifacts/imports` 后加入拼图。若笔记需要登录、被风控、只在 App 内可见，或页面内容完全由动态接口渲染，导入可能失败；这种情况下请手动上传图片。
+
+## 使用建议
+
+1. 上传任意数量同一主题或同一风格的参考图。
+2. 选择每排格数和统一风格；默认每排 4 张，不足一排会自动补白。
+3. 填写下发标题和补充要求。
+4. 检查自动生成的画风描述。
+5. 下载长图，用于灵感下发或视觉 brief。
